@@ -1,0 +1,59 @@
+---
+title: "Interactive Slides"
+format: revealjs
+execute: 
+  echo: false
+---
+
+<script>
+  const words = ["Apple", "Banana", "Cherry", "Date", "Elderberry"];
+  
+  function generateSlides() {
+    const slidesContainer = document.querySelector(".reveal .slides");
+    
+    words.forEach(word => {
+      if (word.length < 2) return; // Ensure the word has at least two letters
+      
+      const sliderMax = word.length - 1;
+
+      const slide = document.createElement("section");
+      slide.innerHTML = `
+        <div style='display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100vh; text-align: center;'>
+          <h1 style='font-size: 4em;'>${word}</h1>
+          <input type='range' min='0' max='${sliderMax}' value='0' class='slider' style='width: ${word.length * 70}px;'>
+        </div>
+      `;
+      slidesContainer.appendChild(slide);
+    });
+  }
+
+  // Handle arrow key navigation
+  document.addEventListener('keydown', (event) => {
+    const focusedElement = document.activeElement;
+    
+    if (event.key === 'ArrowRight' || event.key === 'ArrowLeft') {
+      // If the focused element is a slider, prevent the default slider action
+      if (focusedElement && focusedElement.classList.contains('slider')) {
+        event.preventDefault(); // Prevent the slider value from changing
+      }
+      
+      // Navigate between slides
+      if (event.key === 'ArrowRight') {
+        Reveal.next();  // Move to next slide
+      } else if (event.key === 'ArrowLeft') {
+        Reveal.prev();  // Move to previous slide
+      }
+    }
+  });
+
+  document.addEventListener("DOMContentLoaded", () => {
+    generateSlides();
+    
+    // Automatically focus the .reveal container on page load
+    document.querySelector(".reveal").focus();
+  });
+</script>
+
+<div class="reveal" tabindex="0">
+  <div class="slides"></div>
+</div>
